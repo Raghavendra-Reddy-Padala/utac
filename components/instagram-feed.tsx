@@ -2,87 +2,96 @@ import Image from "next/image"
 import Link from "next/link"
 import { Instagram } from "lucide-react"
 
+// Replace these with your actual screenshot images
+// You'll need to save the screenshots in your public/images folder
 const instagramPosts = [
   {
     id: "1",
-    imageUrl: "/images/instagram-1.jpg",
+    imageUrl: "/images/insta-screenshot-1.jpg",
     likes: 124,
     comments: 8,
   },
   {
     id: "2",
-    imageUrl: "/images/instagram-2.jpg",
+    imageUrl: "/images/insta-screenshot-2.jpg",
     likes: 89,
     comments: 5,
   },
   {
     id: "3",
-    imageUrl: "/images/instagram-3.jpg",
+    imageUrl: "/images/insta-screenshot-3.jpg",
     likes: 210,
     comments: 12,
   },
   {
     id: "4",
-    imageUrl: "/images/instagram-4.jpg",
+    imageUrl: "/images/insta-screenshot-4.jpg",
     likes: 156,
     comments: 9,
   },
   {
     id: "5",
-    imageUrl: "/images/instagram-5.jpg",
+    imageUrl: "/images/insta-screenshot-5.jpg",
     likes: 173,
     comments: 14,
   },
   {
     id: "6",
-    imageUrl: "/images/instagram-6.jpg",
+    imageUrl: "/images/insta-screenshot-6.jpg",
     likes: 92,
     comments: 7,
   },
 ]
 
 export default function InstagramFeed() {
+  const instagramProfileUrl = "https://instagram.com/utac_hyderabad";
+  
   return (
-    <section className="py-16 bg-black">
-      <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10">
-          <div>
-            <h2 className="h2 mb-2">
-              Follow Us on <span className="text-primary">Instagram</span>
+    <section className="py-12 md:py-20 bg-black">
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 md:mb-12">
+          <div className="max-w-2xl">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-3 text-white">
+              Follow Us on <span className="text-primary bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Instagram</span>
             </h2>
-            <p className="text-gray-400">Stay updated with our latest projects and automotive insights.</p>
+            <p className="text-gray-400 text-sm md:text-base">Stay updated with our latest projects and automotive insights.</p>
           </div>
           <Link
-            href="https://instagram.com/utac_hyderabad"
+            href={instagramProfileUrl}
             target="_blank"
-            className="mt-4 md:mt-0 flex items-center gap-2 text-primary hover:text-accent transition-colors"
+            className="mt-4 md:mt-0 flex items-center gap-2 text-primary hover:text-accent transition-colors duration-300 group"
           >
-            <Instagram size={18} />
-            <span>@utac_hyderabad</span>
+            <span className="relative">
+              <Instagram size={20} className="group-hover:scale-110 transition-transform duration-300" />
+              <span className="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+            </span>
+            <span className="font-medium">@utac_hyderabad</span>
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
           {instagramPosts.map((post) => (
             <Link
               key={post.id}
-              href={`https://instagram.com/p/${post.id}`}
+              href={instagramProfileUrl}
               target="_blank"
-              className="group relative overflow-hidden rounded-lg aspect-square"
+              className="group relative overflow-hidden rounded-lg aspect-square shadow-lg transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
             >
               <Image
                 src={post.imageUrl || "/placeholder.svg"}
                 alt="Instagram Post"
                 fill
-                className="object-cover transition-transform duration-300 group-hover:scale-110"
+                sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 16vw"
+                className="object-cover transition-transform duration-500 group-hover:scale-110"
+                loading="lazy"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
-                <div className="flex justify-between text-sm">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-3">
+                <div className="flex justify-between text-white text-sm">
                   <span className="flex items-center gap-1">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
+                      width="14"
+                      height="14"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -98,8 +107,8 @@ export default function InstagramFeed() {
                   <span className="flex items-center gap-1">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
+                      width="14"
+                      height="14"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -113,12 +122,28 @@ export default function InstagramFeed() {
                     {post.comments}
                   </span>
                 </div>
+                <div className="w-full h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent mt-2 mb-2 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+                <div className="text-xs text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity delay-100 duration-300">View on Instagram</div>
               </div>
+              <div className="absolute inset-0 border border-transparent group-hover:border-primary/20 rounded-lg transition-colors duration-300"></div>
             </Link>
           ))}
+        </div>
+        
+        <div className="mt-8 md:mt-12 text-center">
+          <Link
+            href={instagramProfileUrl}
+            target="_blank"
+            className="inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-gradient-to-r from-primary to-accent bg-size-200 bg-pos-0 hover:bg-pos-100 text-white font-medium transition-all duration-300 gap-2 hover:gap-3"
+          >
+            <span>See More on Instagram</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
+          </Link>
         </div>
       </div>
     </section>
   )
 }
-

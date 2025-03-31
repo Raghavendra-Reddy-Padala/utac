@@ -1,0 +1,171 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 0%;
+  --foreground: 0 0% 100%;
+
+  --card: 0 0% 3%;
+  --card-foreground: 0 0% 100%;
+
+  --primary: 348 89% 43%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 0 0% 75%;
+  --secondary-foreground: 0 0% 9%;
+
+  --accent: 0 100% 50%;
+  --accent-foreground: 0 0% 100%;
+
+  --muted: 0 0% 20%;
+  --muted-foreground: 0 0% 83%;
+
+  --destructive: 0 100% 50%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 0 0% 20%;
+  --input: 0 0% 20%;
+  --ring: 348 89% 43%;
+
+  --radius: 0.5rem;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground antialiased;
+    background-image: url("/images/carbon-fiber-bg.png");
+    background-repeat: repeat;
+    background-size: 200px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-orbitron font-bold tracking-wide;
+  }
+
+  p {
+    @apply font-rajdhani;
+  }
+}
+
+@layer components {
+  .glow-effect {
+    box-shadow: 0 0 10px 2px rgba(220, 20, 60, 0.5);
+  }
+
+  .red-gradient {
+    background: linear-gradient(135deg, #8b0000 0%, #ff0000 100%);
+  }
+
+  .card-border {
+    @apply relative border border-primary/30 overflow-hidden rounded-lg;
+  }
+
+  .card-border:before {
+    content: "";
+    @apply absolute -inset-px bg-gradient-to-r from-primary/50 via-accent/50 to-primary/50;
+    animation: rotate 4s linear infinite;
+  }
+
+  .h1 {
+    @apply font-orbitron text-4xl md:text-5xl font-bold tracking-wider;
+  }
+
+  .h2 {
+    @apply font-orbitron text-3xl md:text-4xl font-semibold tracking-wide;
+  }
+
+  .h3 {
+    @apply font-orbitron text-2xl md:text-3xl font-semibold;
+  }
+
+  .hexagon-button {
+    @apply relative inline-flex justify-center items-center px-6 py-3 overflow-hidden transition-all duration-300;
+    clip-path: polygon(10% 0, 90% 0, 100% 50%, 90% 100%, 10% 100%, 0 50%);
+    background: linear-gradient(135deg, rgba(220, 20, 60, 0.8) 0%, rgba(255, 0, 0, 0.8) 100%);
+  }
+
+  .hexagon-button:hover {
+    @apply bg-accent;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
+  }
+
+  .circuit-divider {
+    height: 2px;
+    background: linear-gradient(to right, transparent, #dc143c, transparent);
+    position: relative;
+    margin: 2rem 0;
+  }
+
+  .circuit-divider:before {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #dc143c;
+    border-radius: 50%;
+    top: -4px;
+    left: calc(50% - 5px);
+    box-shadow: 0 0 10px #ff0000;
+  }
+
+  @keyframes rotate {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}
+
+.font-orbitron {
+  font-family: var(--font-orbitron);
+}
+
+.font-rajdhani {
+  font-family: var(--font-rajdhani);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-primary rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-accent;
+}
+
+/* Performance optimizations */
+.hardware-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+

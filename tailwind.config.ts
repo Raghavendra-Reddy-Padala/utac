@@ -20,9 +20,7 @@ const config = {
     },
     extend: {
       fontFamily: {
-        sans: ["var(--font-rajdhani)"],
-        orbitron: ["var(--font-orbitron)"],
-        rajdhani: ["var(--font-rajdhani)"],
+        sans: ["var(--font-poppins)", "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",

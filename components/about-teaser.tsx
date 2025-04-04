@@ -25,7 +25,7 @@ export default function AboutTeaser() {
           <div className="relative">
             <div className="relative z-10 rounded-lg overflow-hidden">
               <Image
-                src="/images/about-teaser.jpg"
+                src="/images/workshop.jpeg"
                 alt="ÜTAC Workshop"
                 width={600}
                 height={400}

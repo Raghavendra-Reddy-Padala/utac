@@ -1,7 +1,19 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
+import { Metadata } from "next"
 
+
+export const metadata: Metadata = {
+  title: "Our Services",
+  description:
+    "Comprehensive automotive services including engine repair, car servicing, AC repair, diagnostics, and performance tuning in Hyderabad.",
+  openGraph: {
+    title: "ÜTAC Automotive Services",
+    description: "Premium automotive services with German engineering standards",
+    images: ["/images/services-og.jpg"],
+  },
+}
 export default function ServicesPage() {
   return (
     <div className="pt-32 pb-24 bg-black">
@@ -17,8 +29,7 @@ export default function ServicesPage() {
           Our <span className="text-primary">Services</span>
         </h1>
         <p className="text-lg text-gray-300 mb-12 max-w-3xl">
-          This is a placeholder for the Services page. In a complete implementation, this page would display detailed
-          information about all services offered by ÜTAC.
+          This is a placeholder for the Services page. 
         </p>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

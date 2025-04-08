@@ -1,341 +1,237 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, ChevronDown } from "lucide-react"
-import ServiceCard from "./service-card"
+import Spline from "@splinetool/react-spline"
 
 export default function HeroSection() {
-  const parallaxRef = useRef<HTMLDivElement>(null)
-  
+  const parallaxRef = useRef(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [splineApp, setSplineApp] = useState(null)
+
   useEffect(() => {
     const handleScroll = () => {
       if (!parallaxRef.current) return
       const scrollY = window.scrollY
-      parallaxRef.current.style.transform = `translateY(${scrollY * 0.5}px)`
-      parallaxRef.current.style.opacity = `${1 - scrollY * 0.002}`
+      const element = parallaxRef.current as HTMLElement
+      element.style.transform = `translateY(${scrollY * 0.3}px)`
+      element.style.opacity = `${1 - scrollY * 0.001}`
     }
-    
     window.addEventListener("scroll", handleScroll)
     return () => {
       window.removeEventListener("scroll", handleScroll)
     }
   }, [])
-  
+
+  // Add window resize handler for mobile responsiveness
+  useEffect(() => {
+    const handleResize = () => {
+      if (splineApp) {
+        const obj = (splineApp as any).findObjectByName("Car")
+        if (obj) {
+          // Adjust car position and size based on screen size - INCREASED MOBILE SCALE
+          if (window.innerWidth < 768) {
+            obj.position.set(0, -0.8, 0) // Move car up on mobile
+            obj.scale.set(2.0, 2.0, 2.0) // Larger scale on mobile
+          } else if (window.innerWidth < 1024) {
+            obj.position.set(0, -0.2, 0) // Slight adjustment for tablets
+            obj.scale.set(1.2, 1.2, 1.2) // Medium scale for tablets
+          } else {
+            obj.position.set(0, 0, 0) // Default position
+            obj.scale.set(1, 1, 1) // Default scale
+          }
+        }
+      }
+    }
+    window.addEventListener("resize", handleResize)
+    if (splineApp) handleResize() // Apply on initial load
+
+    return () => {
+      window.removeEventListener("resize", handleResize)
+    }
+  }, [splineApp])
+
+  const onLoad = (splineApp: any) => {
+    setIsLoading(false)
+    setSplineApp(splineApp)
+
+    // Add event listeners for interactivity once loaded
+    if (splineApp) {
+      const obj = splineApp.findObjectByName("Car")
+      if (obj) {
+        // Improved mobile responsiveness with MUCH larger size adjustment
+        if (window.innerWidth < 768) {
+          obj.position.set(0, -0.8, 0) // Adjusted position higher for better mobile view
+          obj.scale.set(2.8, 2.8, 2.8) // Significantly increased size on mobile for better visibility
+        } else if (window.innerWidth < 1024) {
+          obj.position.set(0, -0.2, 0)
+          obj.scale.set(1.2, 1.2, 1.2)
+        }
+
+        // Remove any background planes or elements that might be causing a different background
+        const scene = splineApp.scene
+        if (scene) {
+          scene.traverse((child: any) => {
+            if (child.name && (child.name.includes("Background") || child.name.includes("Plane"))) {
+              child.visible = false
+            }
+          })
+        }
+
+        // Set the background color of the Spline scene to match the hero section
+        if (splineApp.renderer) {
+          splineApp.renderer.setClearColor(0x050505, 1); // Match the hero section background
+        }
+
+        obj.addEventListener("mouseDown", () => {
+          // Add rotation animation on click
+          if (obj.rotation) {
+            const targetY = obj.rotation.y + Math.PI / 2
+            const animate = () => {
+              const diff = targetY - obj.rotation.y
+              if (Math.abs(diff) > 0.01) {
+                obj.rotation.y += diff * 0.1
+                requestAnimationFrame(animate)
+              }
+            }
+            animate()
+          }
+        })
+
+        obj.addEventListener("mouseHover", () => {
+          // Add subtle hover effect - now with conditional scale based on device size
+          if (obj.scale) {
+            const originalScale = window.innerWidth < 768 ? 1.6 : window.innerWidth < 1024 ? 1.2 : 1
+            obj.scale.set(originalScale * 1.03, originalScale * 1.03, originalScale * 1.03)
+          }
+
+          // Add glow effect to car
+          const carMaterial = obj.material
+          if (carMaterial) {
+            carMaterial.emissiveIntensity = 0.2
+          }
+        })
+
+        obj.addEventListener("mouseLeave", () => {
+          // Reset on mouse leave - with updated scale values
+          if (obj.scale) {
+            const originalScale = window.innerWidth < 768 ? 1.6 : window.innerWidth < 1024 ? 1.2 : 1
+            obj.scale.set(originalScale, originalScale, originalScale)
+          }
+
+          // Remove glow effect
+          const carMaterial = obj.material
+          if (carMaterial) {
+            carMaterial.emissiveIntensity = 0
+          }
+        })
+      }
+
+      // Add subtle ambient animation for better integration
+      const animate = () => {
+        const obj = splineApp.findObjectByName("Car")
+        if (obj) {
+          // Subtle floating animation
+          obj.position.y = obj.position.y + Math.sin(Date.now() * 0.001) * 0.0005
+
+          // Subtle rotation
+          if (obj.rotation) {
+            obj.rotation.y += 0.0005
+          }
+        }
+        requestAnimationFrame(animate)
+      }
+      animate()
+    }
+  }
+
   return (
-    <section className="relative h-screen overflow-hidden">
-      {/* Professional Car Service Animation Background */}
-      <div className="absolute inset-0 z-0 bg-slate-900 overflow-hidden">
-        {/* Dynamic Automotive Elements */}
-        <div className="absolute inset-0">
-          {/* Car silhouette */}
-          <div className="car-silhouette"></div>
-          
-          {/* Engine parts animation */}
-          <div className="piston piston-1"></div>
-          <div className="piston piston-2"></div>
-          <div className="piston piston-3"></div>
-          <div className="piston piston-4"></div>
-          
-          {/* Diagnostic scan lines */}
-          <div className="diagnostic-scan"></div>
-          
-          {/* Speedometer */}
-          <div className="speedometer">
-            <div className="speedometer-needle"></div>
-          </div>
-          
-          {/* Spark plugs firing */}
-          <div className="spark spark-1"></div>
-          <div className="spark spark-2"></div>
-          <div className="spark spark-3"></div>
-          <div className="spark spark-4"></div>
-          
-          {/* Tool elements */}
-          <div className="wrench wrench-1"></div>
-          <div className="wrench wrench-2"></div>
-        </div>
-        
-        {/* Tech grid overlay for modern feel */}
-        <div className="tech-grid"></div>
-        
-        {/* Overlay gradient with automotive color scheme */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70 z-10"></div>
-      </div>
-      
-      {/* Hero Content */}
-      <div className="container relative z-20 h-full flex flex-col justify-center items-start px-6 pt-20 md:pt-0">
-        <div ref={parallaxRef} className="max-w-3xl">
-          <h2 className="font-orbitron text-2xl md:text-3xl font-bold text-accent tracking-widest mb-2">UTAC</h2>
-          
-          <h1 className="font-orbitron text-4xl sm:text-5xl md:text-6xl font-bold tracking-wider mb-4 text-white">
-            <span className="text-primary">Engineering Excellence,</span>
+    <section className="relative h-screen overflow-hidden" style={{ backgroundColor: "#050505" }}>
+      {/* Two column layout for desktop, stack for mobile */}
+      <div className="container relative z-20 h-full flex flex-col lg:flex-row items-center justify-between px-4 md:px-6 pt-16 lg:pt-0 gap-4 md:gap-8">
+        {/* Left column - Text content */}
+        <div
+          ref={parallaxRef}
+          className="w-full lg:w-1/2 flex flex-col justify-center text-center lg:text-left mb-8 lg:mb-0"
+        >
+          <h2 className="font-orbitron text-xl md:text-3xl font-bold text-red-600 tracking-widest mb-2">UTAC</h2>
+
+          <h1 className="font-orbitron text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-wider mb-4 text-white">
+            <span className="text-red-600">Engineering Excellence,</span>
             <br className="hidden sm:block" />
-            <span className="sm:mt-2 inline-block">Automotive Perfection</span>
+            <span className="mt-2 inline-block">Automotive Perfection</span>
           </h1>
-          
-          <div className="h-1 w-32 bg-primary my-4 relative">
-            <span className="absolute top-1/2 right-0 h-3 w-3 rounded-full bg-accent -translate-y-1/2 animate-pulse"></span>
+
+          <div className="h-1 w-32 bg-red-600 my-4 mx-auto lg:mx-0 relative">
+            <span className="absolute top-1/2 right-0 h-3 w-3 rounded-full bg-red-500 -translate-y-1/2 animate-pulse"></span>
           </div>
-          
-          <p className="text-lg max-w-2xl mb-6 text-gray-300 font-rajdhani">
+
+          <p className="text-base md:text-lg max-w-2xl mx-auto lg:mx-0 mb-6 text-gray-300 font-rajdhani">
             Premium automotive maintenance and repair services with German engineering philosophy and local expertise.
             Over 5 years serving Hyderabad with technical excellence.
           </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 mt-6">
-            <Button asChild className="hexagon-button group w-full sm:w-auto text-lg py-6">
+
+          <div className="flex flex-col sm:flex-row gap-4 mt-4 justify-center lg:justify-start">
+            <Button
+              asChild
+              className="bg-red-600 hover:bg-red-700 text-white group w-full sm:w-auto text-base md:text-lg py-4 md:py-6 rounded-none relative overflow-hidden"
+            >
               <Link href="/contact">
-                Book a Service
-                <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={20} />
+                <span className="relative z-10 flex items-center justify-center">
+                  Book a Service
+                  <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={18} />
+                </span>
+                {/* Animated border effect */}
+                <span className="absolute inset-0 border border-red-400 opacity-0 group-hover:opacity-100 transition-opacity"></span>
               </Link>
             </Button>
-            <Button asChild variant="outline" className="border-primary hover:border-accent w-full sm:w-auto text-lg py-6">
+            <Button
+              asChild
+              variant="outline"
+              className="border-red-600 text-red-600 hover:bg-red-600/10 hover:border-red-500 w-full sm:w-auto text-base md:text-lg py-4 md:py-6 rounded-none"
+            >
               <Link href="/services">Explore Services</Link>
             </Button>
           </div>
         </div>
-        
-        {/* Service Cards - Mobile Friendly and not shown on mobile */}
-        <div className="hidden sm:block sm:absolute sm:bottom-32 sm:right-8">
-          <div className="grid grid-cols-2 gap-3 hardware-accelerated">
-            <ServiceCard title="Engine Repair" icon="engine" delay={0} />
-            <ServiceCard title="Car Servicing" icon="car" delay={0.2} />
-            <ServiceCard title="AC Repair" icon="snowflake" delay={0.4} />
-            <ServiceCard title="Diagnostics" icon="diagnostic" delay={0.6} />
+
+        {/* Right column - 3D Model with better integration */}
+        <div className="w-full lg:w-1/2 h-64 sm:h-80 md:h-96 lg:h-full relative">
+          {isLoading && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-12 h-12 border-4 border-red-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          )}
+
+          {/* Spline container with pure black background */}
+          <div className="w-full h-full relative">
+            {/* Increased height on mobile for better model display */}
+            <div className="absolute inset-0 z-10">
+              <Spline
+                scene="https://prod.spline.design/HXl5Bc8rkq74-yF5/scene.splinecode"
+                onLoad={onLoad}
+                className="w-full h-full"
+                style={{ background: "#050505" }}
+              />
+            </div>
+
+            {/* Interactive hint */}
+            {!isLoading && (
+              <div className="absolute bottom-8 right-8 bg-black/50 backdrop-blur-md text-red-600 px-4 py-2 rounded-lg font-orbitron text-xs sm:text-sm z-20 border border-red-600/30">
+              Click to interact
+              </div>
+            )}
           </div>
         </div>
-        
-        {/* Scroll Indicator - Hidden on mobile to prevent overlapping */}
-        <div className="hidden sm:flex absolute bottom-8 left-1/2 -translate-x-1/2 flex-col items-center animate-bounce bg-black/50 px-4 py-2 rounded-full">
-          <span className="text-xs text-gray-300 mb-1 font-orbitron">SCROLL DOWN</span>
-          <ChevronDown className="text-primary" size={20} />
-        </div>
       </div>
-      
-      <style jsx global>{`
-        /* Modern Car Silhouette Animation */
-        .car-silhouette {
-          position: absolute;
-          bottom: 10%;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 80%;
-          height: 25%;
-          max-width: 800px;
-          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 512'%3E%3Cpath fill='rgba(100, 255, 218, 0.1)' d='M544 192h-16L419.22 56.02A64.025 64.025 0 0 0 369.24 32H155.33c-26.17 0-49.7 15.93-59.42 40.23L48 194.26C20.44 201.4 0 226.21 0 256v112c0 8.84 7.16 16 16 16h48c0 53.02 42.98 96 96 96s96-42.98 96-96h128c0 53.02 42.98 96 96 96s96-42.98 96-96h48c8.84 0 16-7.16 16-16v-80c0-53.02-42.98-96-96-96zM160 432c-26.47 0-48-21.53-48-48s21.53-48 48-48 48 21.53 48 48-21.53 48-48 48zm72-240H116.93l38.4-96H232v96zm48 0V96h89.24l76.8 96H280zm200 240c-26.47 0-48-21.53-48-48s21.53-48 48-48 48 21.53 48 48-21.53 48-48 48z'%3E%3C/path%3E%3C/svg%3E");
-          background-repeat: no-repeat;
-          background-position: center;
-          background-size: contain;
-          opacity: 0.25;
-          filter: drop-shadow(0 0 20px rgba(100, 255, 218, 0.5));
-          animation: car-pulse 4s infinite ease-in-out;
-        }
-        
-        @keyframes car-pulse {
-          0%, 100% { opacity: 0.15; transform: translateX(-50%) scale(1); }
-          50% { opacity: 0.25; transform: translateX(-50%) scale(1.05); }
-        }
-        
-        /* Engine Pistons Animation */
-        .piston {
-          position: absolute;
-          width: 40px;
-          height: 120px;
-          background: linear-gradient(to bottom, 
-            rgba(100, 255, 218, 0.05) 0%,
-            rgba(100, 255, 218, 0.2) 50%,
-            rgba(100, 255, 218, 0.05) 100%);
-          border-radius: 5px;
-        }
-        
-        .piston-1 {
-          top: 20%;
-          left: 20%;
-          animation: piston-move 1.5s infinite ease-in-out;
-        }
-        
-        .piston-2 {
-          top: 30%;
-          left: 30%;
-          animation: piston-move 1.5s infinite ease-in-out;
-          animation-delay: -0.3s;
-        }
-        
-        .piston-3 {
-          top: 20%;
-          right: 20%;
-          animation: piston-move 1.5s infinite ease-in-out;
-          animation-delay: -0.6s;
-        }
-        
-        .piston-4 {
-          top: 30%;
-          right: 30%;
-          animation: piston-move 1.5s infinite ease-in-out;
-          animation-delay: -0.9s;
-        }
-        
-        @keyframes piston-move {
-          0%, 100% { transform: translateY(-20px); }
-          50% { transform: translateY(20px); }
-        }
-        
-        /* Diagnostic Scan Animation */
-        .diagnostic-scan {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: repeating-linear-gradient(
-            0deg,
-            transparent,
-            transparent 30px,
-            rgba(100, 255, 218, 0.03) 30px,
-            rgba(100, 255, 218, 0.03) 31px
-          );
-          animation: scan-move 10s linear infinite;
-          opacity: 0.6;
-        }
-        
-        @keyframes scan-move {
-          0% { background-position: 0 0; }
-          100% { background-position: 0 100px; }
-        }
-        
-        /* Speedometer Animation */
-        .speedometer {
-          position: absolute;
-          bottom: 20%;
-          right: 15%;
-          width: 150px;
-          height: 75px;
-          border-radius: 75px 75px 0 0;
-          border: 2px solid rgba(100, 255, 218, 0.15);
-          border-bottom: none;
-          transform: translateX(-50%);
-        }
-        
-        .speedometer:after {
-          content: '';
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          width: 100%;
-          height: 2px;
-          background: rgba(100, 255, 218, 0.15);
-        }
-        
-        .speedometer-needle {
-          position: absolute;
-          bottom: 0;
-          left: 50%;
-          width: 2px;
-          height: 65px;
-          background-color: rgba(100, 255, 218, 0.5);
-          transform-origin: bottom center;
-          animation: needle-move 4s ease-in-out infinite;
-        }
-        
-        @keyframes needle-move {
-          0% { transform: rotate(-90deg); }
-          20% { transform: rotate(20deg); }
-          30% { transform: rotate(0deg); }
-          40% { transform: rotate(60deg); }
-          50% { transform: rotate(30deg); }
-          70% { transform: rotate(90deg); }
-          80% { transform: rotate(40deg); }
-          100% { transform: rotate(-90deg); }
-        }
-        
-        /* Spark Plug Animation */
-        .spark {
-          position: absolute;
-          width: 10px;
-          height: 10px;
-          border-radius: 50%;
-          background-color: rgba(255, 255, 255, 0.8);
-          box-shadow: 0 0 20px 10px rgba(100, 255, 218, 0.6);
-          opacity: 0;
-        }
-        
-        .spark-1 {
-          top: 40%;
-          left: 22%;
-          animation: spark 2s infinite;
-        }
-        
-        .spark-2 {
-          top: 45%;
-          left: 28%;
-          animation: spark 2s infinite;
-          animation-delay: -0.5s;
-        }
-        
-        .spark-3 {
-          top: 40%;
-          right: 22%;
-          animation: spark 2s infinite;
-          animation-delay: -1s;
-        }
-        
-        .spark-4 {
-          top: 45%;
-          right: 28%;
-          animation: spark 2s infinite;
-          animation-delay: -1.5s;
-        }
-        
-        @keyframes spark {
-          0%, 100% { opacity: 0; transform: scale(0); }
-          10%, 20% { opacity: 1; transform: scale(1.5); }
-          30% { opacity: 0; transform: scale(0); }
-        }
-        
-        /* Wrench Tool Animation */
-        .wrench {
-          position: absolute;
-          width: 90px;
-          height: 90px;
-          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='rgba(100, 255, 218, 0.15)' d='M507.73 109.1c-2.24-9.03-13.54-12.09-20.12-5.51l-74.36 74.36-67.88-11.31-11.31-67.88 74.36-74.36c6.62-6.62 3.43-17.9-5.66-20.16-47.38-11.74-99.55.91-136.58 37.93-39.64 39.64-50.55 97.1-34.05 147.2L18.74 402.76c-24.99 24.99-24.99 65.51 0 90.5 24.99 24.99 65.51 24.99 90.5 0l213.21-213.21c50.12 16.71 107.47 5.68 147.37-34.22 37.07-37.07 49.7-89.32 37.91-136.73zM64 472c-13.25 0-24-10.75-24-24 0-13.26 10.75-24 24-24s24 10.74 24 24c0 13.25-10.75 24-24 24z'%3E%3C/path%3E%3C/svg%3E");
-          background-repeat: no-repeat;
-          background-position: center;
-          background-size: contain;
-          opacity: 0.2;
-        }
-        
-        .wrench-1 {
-          bottom: 15%;
-          left: 15%;
-          animation: wrench-rotate 15s linear infinite;
-        }
-        
-        .wrench-2 {
-          top: 15%;
-          right: 15%;
-          animation: wrench-rotate 20s linear infinite reverse;
-        }
-        
-        @keyframes wrench-rotate {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        
-        /* Tech Grid for Modern Feel */
-        .tech-grid {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: 
-            linear-gradient(to right, rgba(100, 255, 218, 0.05) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(100, 255, 218, 0.05) 1px, transparent 1px);
-          background-size: 40px 40px;
-        }
-      `}</style>
+
+      {/* Scroll Indicator */}
+<div className="hidden sm:flex absolute bottom-8 left-1/2 -translate-x-1/2 flex-col items-center bg-black/50 px-4 py-2 rounded-full z-30 border border-red-600/20">
+        <span className="text-xs text-gray-300 mb-1 font-orbitron">SCROLL DOWN</span>
+        <ChevronDown className="text-red-600" size={20} />
+      </div>
     </section>
   )
 }

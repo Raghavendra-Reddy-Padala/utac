@@ -315,7 +315,7 @@ export default function GalleryPage() {
       type: "image", 
       title: "Engine Repair", 
       desc: "Professional engine repair and maintenance service", 
-      url: "/images/gallery-1.jpeg", 
+      url: "https://images.unsplash.com/photo-1606577924006-27d39b132ae2?q=80&w=800", 
       category: "Repairs",
       span: "md:col-span-1 md:row-span-2"
     },
@@ -324,7 +324,7 @@ export default function GalleryPage() {
       type: "image", 
       title: "Car Servicing", 
       desc: "Comprehensive car servicing for all models", 
-      url: "/images/gallery-1.jpeg", 
+      url: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=800", 
       category: "Servicing",
       span: "md:col-span-2 md:row-span-2"
     },
@@ -333,16 +333,16 @@ export default function GalleryPage() {
       type: "image", 
       title: "Workshop", 
       desc: "Our modern workshop facility with advanced equipment", 
-      url: "/images/gallery-1.jpeg", 
+      url: "https://images.unsplash.com/photo-1629382312420-2640905f9e4d?q=80&w=800", 
       category: "Facility",
       span: "md:col-span-1 md:row-span-2"
     },
     { 
       id: 4, 
-      type: "image", 
+      type: "video", 
       title: "Performance Tuning", 
       desc: "Custom performance tuning for enhanced driving experience", 
-      url: "/images/gallery-1.jpeg", 
+      url: "https://player.vimeo.com/external/371433846.sd.mp4?s=236f28f56586d2d8675797499847f7019a1d58bc&profile_id=139&oauth2_token_id=57447761", 
       category: "Tuning",
       span: "md:col-span-2 md:row-span-2"
     },
@@ -351,7 +351,7 @@ export default function GalleryPage() {
       type: "image", 
       title: "Diagnostic Equipment", 
       desc: "State-of-the-art diagnostic tools for precise troubleshooting", 
-      url: "/images/gallery-1.jpeg", 
+      url: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=800", 
       category: "Equipment",
       span: "md:col-span-1 md:row-span-3"
     },
@@ -360,16 +360,16 @@ export default function GalleryPage() {
       type: "image", 
       title: "Car Detail", 
       desc: "Premium detailing service for a showroom shine", 
-      url: "/images/gallery-1.jpeg", 
+      url: "https://images.unsplash.com/photo-1552168324-d612d77725e3?q=80&w=800", 
       category: "Detailing",
       span: "md:col-span-1 md:row-span-2"
     },
     { 
       id: 7, 
-      type: "image", 
+      type: "video", 
       title: "Electrical Repair", 
       desc: "Expert electrical system diagnostics and repair", 
-      url: "/images/gallery-1.jpeg", 
+      url: "https://player.vimeo.com/external/368760546.sd.mp4?s=54e82b34831347c7932745412b6403f6500c5f4f&profile_id=139&oauth2_token_id=57447761", 
       category: "Repairs",
       span: "md:col-span-2 md:row-span-2"
     },
@@ -378,7 +378,7 @@ export default function GalleryPage() {
       type: "image", 
       title: "Team Working", 
       desc: "Our dedicated team of professional mechanics", 
-      url: "/images/gallery-1.jpeg", 
+      url: "https://images.unsplash.com/photo-1603712726275-8bbaba9a01ea?q=80&w=800", 
       category: "Team",
       span: "md:col-span-1 md:row-span-2"
     },
@@ -387,7 +387,7 @@ export default function GalleryPage() {
       type: "image", 
       title: "Customer Consultation", 
       desc: "Personalized customer service and consultation", 
-      url: "/images/gallery-1.jpeg", 
+      url: "https://images.unsplash.com/photo-1560250056-07ba64664864?q=80&w=800", 
       category: "Customers",
       span: "md:col-span-2 md:row-span-2"
     }

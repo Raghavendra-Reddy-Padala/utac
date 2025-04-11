@@ -26,11 +26,10 @@ export default function AboutPage() {
           <div className="relative">
             <div className="relative z-10 rounded-lg overflow-hidden">
               <Image
-                src="/images/about-teaser.jpg"
+                src="/images/workshop.png"
                 alt="ÜTAC Workshop"
-                width={600}
-                height={400}
-                className="w-full h-auto object-cover"
+                width={500}
+                height={250}
               />
               <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-transparent mix-blend-multiply"></div>
             </div>
